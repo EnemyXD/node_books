@@ -1,4 +1,5 @@
 const Uid = require("node-unique-id-generator");
+const moment = require("moment");
 
 class book {
   constructor(
@@ -16,6 +17,9 @@ class book {
     this.favorite = favorite;
     this.fileCover = fileCover;
     this.fileName = fileName;
+    this.fileBook = `${moment().format("DD-MM-YYYY - HH-mm-ss_SSS")} - ${
+      this.id
+    }`;
   }
 }
 module.exports = book;

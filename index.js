@@ -1,91 +1,25 @@
 const express = require("express");
-const formData = require("express-form-data");
+const bodyParser = require("body-parser");
 const cors = require("cors");
 
-const books = require("./models.js");
+const loggerMiddleware = require("./middleware/logger");
+const errorMiddleware = require("./middleware/error");
 
-let store = {
-  user: {
-    id: 0,
-    login: "test",
-    mail: "test@mail.ru",
-  },
-  library: [],
-};
-
-for (let i = 0; i < 10; i++) {
-  const book = new books();
-  store.library.push(book);
-}
-
-console.log(store);
+const booksRouter = require("./routes/methods");
+const indexRouter = require("./routes/indexRouter");
 
 const app = express();
-app.use(formData.parse());
+app.use(bodyParser());
 app.use(cors());
 
-app.post("/api/users/login", (req, res) => {
-  res.status(201).json(store.user);
-});
-app.get("/api/library", (req, res) => {
-  const library = store.library;
-  res.json(library);
-});
-app.get("/api/library/:id", (req, res) => {
-  const library = store.library;
-  const { id } = req.params;
-  const idx = library.findIndex((el) => el.id === id);
-  idx !== -1 ? res.json(library[idx]) : res.status(404).json("NOT FOUND");
-});
-app.post("/api/library", (req, res) => {
-  const { title, description, authors, favorite, fileCover, fileName } =
-    req.body;
-  const book = new books(
-    title,
-    description,
-    authors,
-    favorite,
-    fileCover,
-    fileName
-  );
-  store.library.push(book);
+app.use(loggerMiddleware);
 
-  res.status(201);
-  res.json(book);
-});
-app.put("/api/library/:id", (req, res) => {
-  const { id } = req.params;
-  const { title, description, authors, favorite, fileCover, fileName } =
-    req.body;
-  const idx = store.library.findIndex((el) => el.id === id);
+// app.use("/public", express.static(__dirname + "/public"));
 
-  if (idx !== -1) {
-    store.library[idx] = {
-      ...store.library[idx],
-      title: title,
-      description: description,
-      authors: authors,
-      favorite: favorite,
-      fileCover: fileCover,
-      fileName: fileName,
-    };
-    res.json(store.library[idx]);
-  } else {
-    res.status(404).json("NOT FOUND");
-  }
-});
-app.delete("/api/library/:id", (req, res) => {
-  const { id } = req.params;
+app.use("/", indexRouter);
+app.use("/api/library", booksRouter);
 
-  const idx = store.library.findIndex((el) => el.id === id);
-
-  if (idx !== -1) {
-    store.library.splice(idx, 1);
-    res.json(true);
-  } else {
-    res.status(404).json("NOT FOUND");
-  }
-});
+app.use(errorMiddleware);
 
 app.listen(3010, "localhost", () => {
   console.log("Server started.");
