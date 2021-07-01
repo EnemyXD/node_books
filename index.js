@@ -14,7 +14,7 @@ app.use(cors());
 
 app.use(loggerMiddleware);
 
-// app.use("/public", express.static(__dirname + "/public"));
+app.use("/public", express.static(__dirname + "/public"));
 
 app.use("/", indexRouter);
 app.use("/api/library", booksRouter);
