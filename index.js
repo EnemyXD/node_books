@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 app.set("view engine", "ejs");
 
-app.use(loggerMiddleware);
+// app.use(loggerMiddleware);
 
 app.use("/public", express.static(__dirname + "/public"));
 
