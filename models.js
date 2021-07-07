@@ -3,7 +3,7 @@ const moment = require("moment");
 
 class book {
   constructor(
-    title = "",
+    title = "--------",
     description = "",
     authors = "",
     favorite = "",

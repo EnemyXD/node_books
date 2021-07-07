@@ -1,4 +1,3 @@
 module.exports = (req, res) => {
-  res.status(400);
-  res.send("NOT FOUND");
+  res.render("error/404", { title: "404 | СТРАНИЦА НЕ НАЙДЕНА" });
 };
