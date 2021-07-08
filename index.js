@@ -27,6 +27,6 @@ app.use("/api/library", booksRouter);
 
 app.use(errorMiddleware);
 
-app.listen(PORT, "localhost", () => {
+app.listen(PORT, () => {
   console.log(`start server PORT ${PORT}`);
 });
