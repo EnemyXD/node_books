@@ -35,8 +35,14 @@ router.get("/", (req, res) => {
 router.get("/:id", (req, res) => {
   const library = store.library;
   const { id } = req.params;
+
   const idx = library.findIndex((el) => el.id === id);
-  idx !== -1 ? res.json(library[idx]) : res.status(404).json("NOT FOUND");
+
+  if (idx !== -1) {
+    
+  } else {
+    res.status(404).json("NOT FOUND");
+  }
 });
 router.post("", (req, res) => {
   const { ...args } = req.body;

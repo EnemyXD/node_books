@@ -1,0 +1,15 @@
+services:
+  server:
+    image: enemygg/library:latest
+    volumes: 
+        - c:\users\user\documents\rn_first-app\it-kamasutra\node_books\public:/code/public
+    ports: 
+        - 3001:3002
+  counter:
+    image: enemygg/counter:latest
+    volumes: 
+        - c:\users\user\documents\rn_first-app\it-kamasutra\node_counter\counter:/code/counter
+    ports: 
+        - 3000:3001
+    links: 
+        - server

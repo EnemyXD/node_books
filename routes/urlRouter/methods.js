@@ -3,6 +3,7 @@ const router = express.Router();
 const books = require("../../models");
 const fileMiddleware = require("../../middleware/file");
 const fs = require("fs");
+const axios = require("axios").default;
 
 let store = {
   user: {
@@ -78,14 +79,25 @@ router.post("/update/:id", (req, res) => {
     res.status(404).redirect("/library/404");
   }
 });
-router.get("/:id", (req, res) => {
+router.get("/:id", async (req, res) => {
   const { id } = req.params;
   const idx = store.library.findIndex((el) => el.id === id);
 
   if (idx !== -1) {
+    let count;
+    await axios.post(`http://counter:3001/counter/${id}`, {}).catch((err) => {
+      if (err.response) {
+        console.log(err.response.data);
+        console.log(err.response.status);
+        console.log(err.response.header);
+      }
+    });
+    await axios.get(`http://counter:3001/counter/${id}`).then((res) => {
+      count = res.data;
+    });
     res.render("books/view", {
       title: "Library | Обзор",
-      book: store.library[idx],
+      book: { ...store.library[idx], count: count },
     });
   } else {
     res.status(404).redirect("/404");
