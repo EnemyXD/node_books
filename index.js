@@ -9,7 +9,7 @@ const booksRouter = require("./routes/methods");
 const indexRouter = require("./routes/indexRouter");
 const urlBooksRouter = require("./routes/urlRouter/methods");
 
-const PORT = process.env.PORT || 3002;
+const PORT = process.env.SERVER_PORT || 3002;
 
 const app = express();
 app.use(bodyParser.json());

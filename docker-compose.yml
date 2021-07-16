@@ -5,6 +5,8 @@ services:
         - c:\users\user\documents\rn_first-app\it-kamasutra\node_books\public:/code/public
     ports: 
         - 3001:3002
+        environment: 
+            SERVER_PORT: 3002
   counter:
     image: enemygg/counter:latest
     volumes: 
@@ -13,3 +15,5 @@ services:
         - 3000:3001
     links: 
         - server
+        environment: :
+            COUNTER_PORT: 3001
