@@ -1,19 +1,36 @@
 services:
-  server:
-    image: enemygg/library:latest
-    volumes: 
-        - c:\users\user\documents\rn_first-app\it-kamasutra\node_books\public:/code/public
-    ports: 
-        - 3001:3002
+    mongodb:
+        image: mongo:latest
+        restart: always
+        expose: 
+            - 27017
         environment: 
-            SERVER_PORT: 3002
-  counter:
-    image: enemygg/counter:latest
-    volumes: 
-        - c:\users\user\documents\rn_first-app\it-kamasutra\node_counter\counter:/code/counter
-    ports: 
-        - 3000:3001
-    links: 
-        - server
-        environment: :
+            - MONGO_INIT_DATABASE=library
+    mongo-express:
+        image: mongo-express
+        ports: 
+            - 8081:8081
+        environment: 
+            - ME_CONFIG_MONGODB_SERVER=MONGO_INIT_DATABASE
+        depends_on:
+            - mongodb
+    server:
+        image: enemygg/library:latest
+        volumes: 
+            - c:\users\user\documents\rn_first-app\it-kamasutra\node_books\public:/code/public
+        ports: 
+            - 80:3000
+        environment: 
+            SERVER_PORT=3000
+        depends_on:
+            - mongodb
+     counter:
+        image: enemygg/counter:latest
+        volumes: 
+            - c:\users\user\documents\rn_first-app\it-kamasutra\node_counter\counter:/code/counter
+        ports: 
+            - 3001:3001
+        links: 
+            - server
+        environment: 
             COUNTER_PORT: 3001
