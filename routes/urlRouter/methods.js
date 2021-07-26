@@ -1,124 +1,85 @@
 const express = require("express");
 const router = express.Router();
-const books = require("../../models");
 const fileMiddleware = require("../../middleware/file");
-const fs = require("fs");
-const axios = require("axios").default;
+const Book = require("../../models/book");
 
-let store = {
-  user: {
-    id: 0,
-    login: "test",
-    mail: "test@mail.ru",
-  },
-  library: [],
-};
+router.get("/", async (req, res) => {
+  const books = await Book.find();
 
-for (let i = 0; i < 3; i++) {
-  const book = new books();
-  store.library.push(book);
-  fs.appendFile(
-    __dirname + `/../../public/${book.fileBook}.txt`,
-    `${book.id}`,
-    (err) => {
-      if (err) throw err;
-    }
-  );
-}
-
-router.get("/", (req, res) => {
-  res.render("books/index", { title: "Книги", library: store.library });
+  res.render("books/index", {
+    title: "Книги",
+    library: books,
+  });
 });
 router.get("/create", (req, res) => {
-  res.render("books/create", { title: "Library | Создать книгу", book: {} });
+  res.render("books/create", {
+    title: "Library | Создать книгу",
+    book: {},
+  });
 });
-router.post("/create", (req, res) => {
-  const { title, description, authors, favorite, fileCover, fileName } =
-    req.body;
-  const book = new books(
-    title,
-    description,
-    authors,
-    favorite,
-    fileCover,
-    fileName
-  );
-  console.log(book);
-  store.library.push(book);
-  res.redirect("/library");
-});
-router.get("/update/:id", (req, res) => {
-  const { id } = req.params;
-  const idx = store.library.findIndex((el) => el.id === id);
+router.post("/create", async (req, res) => {
+  const { title, authors, description } = req.body;
+  const newBook = new Book({ title, authors, description });
 
-  if (idx !== -1) {
+  try {
+    await newBook.save();
+    res.redirect("/library");
+  } catch (e) {
+    console.log(e);
+  }
+});
+router.get("/update/:id", async (req, res) => {
+  const { id } = req.params;
+
+  const book = await Book.findById(id).select("title description authors");
+
+  if (book) {
     res.render("books/update", {
       title: "Library | Книга",
-      book: store.library[idx],
+      book: book,
     });
-  } else res.status(404).redirect("/404");
-});
-router.post("/update/:id", (req, res) => {
-  const { id } = req.params;
-  const { title, description, authors, favorite, fileCover, fileName } =
-    req.body;
-  const idx = store.library.findIndex((el) => el.id === id);
-
-  if (idx !== -1) {
-    store.library[idx] = {
-      ...store.library[idx],
-      title: title,
-      description: description,
-      authors: authors,
-      favorite: favorite,
-      fileCover: fileCover,
-      fileName: fileName,
-    };
-    res.redirect(`/library/${id}`);
   } else {
-    res.status(404).redirect("/library/404");
+    res.status(404).redirect("/404");
   }
+});
+router.post("/update/:id", async (req, res) => {
+  const { id } = req.params;
+
+  const { title, authors, description } = req.body;
+
+  const update = {
+    title: title,
+    authors: authors,
+    description: description,
+  };
+
+  await Book.findByIdAndUpdate(id, update);
+
+  res.redirect(`/library/${id}`);
 });
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
-  const idx = store.library.findIndex((el) => el.id === id);
 
-  if (idx !== -1) {
-    let count;
-    await axios.post(`http://counter:3001/counter/${id}`, {}).catch((err) => {
-      if (err.response) {
-        console.log(err.response.data);
-        console.log(err.response.status);
-        console.log(err.response.header);
-      }
-    });
-    await axios.get(`http://counter:3001/counter/${id}`).then((res) => {
-      count = res.data;
-    });
+  const book = await Book.findById(id).select("title description authors");
+
+  if (book) {
     res.render("books/view", {
       title: "Library | Обзор",
-      book: { ...store.library[idx], count: count },
+      book: book,
     });
   } else {
     res.status(404).redirect("/404");
   }
 });
-router.post("/delete/:id", (req, res) => {
+router.post("/delete/:id", async (req, res) => {
   const { id } = req.params;
-  const idx = store.library.findIndex((el) => el.id === id);
-
-  if (idx !== -1) {
-    store.library.splice(idx, 1);
-    res.redirect("/library");
-  } else {
-    res.status(404).redirect("/404");
-  }
+  await Book.deleteOne({ _id: id });
+  res.redirect("/library");
 });
 router.post("/upload", fileMiddleware.single("books"), (req, res) => {
   if (req.file) {
     const { path } = req.file;
     console.log(path);
-
     res.json(path);
   } else {
     res.json(null);
@@ -126,9 +87,7 @@ router.post("/upload", fileMiddleware.single("books"), (req, res) => {
 });
 router.get("/:id/download", (req, res) => {
   const { id } = req.params;
-
   const object = store.library.filter((el) => el.id === id);
-
   if (object) {
     res.download(
       __dirname + `/../public/${object[0].fileBook}.txt`,

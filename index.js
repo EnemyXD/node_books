@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const mongoose = require('mongoose')
 
 const loggerMiddleware = require("./middleware/logger");
 const errorMiddleware = require("./middleware/error");
@@ -9,11 +10,15 @@ const booksRouter = require("./routes/methods");
 const indexRouter = require("./routes/indexRouter");
 const urlBooksRouter = require("./routes/urlRouter/methods");
 
-const PORT = process.env.SERVER_PORT || 3002;
+const PORT = process.env.SERVER_PORT || 3000;
+const UserDB = process.env.DB_USERNAME || 'admin';
+const PasswordDB = process.env.DB_PASSWORD || 'pass';
+const NameDB = process.env.DB_NAME || 'library';
+const HostDB = process.env.DB_HOST || 'mongodb://mongodb:27017/';
 
 const app = express();
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(cors());
 app.set("view engine", "ejs");
 
@@ -27,6 +32,22 @@ app.use("/api/library", booksRouter);
 
 app.use(errorMiddleware);
 
-app.listen(PORT, () => {
-  console.log(`start server PORT ${PORT}`);
-});
+async function Start() {
+    try {
+        mongoose.connect(HostDB, {
+            user: UserDB,
+            pass: PasswordDB,
+            dbName: NameDB,
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        })
+
+        app.listen(PORT, () => {
+            console.log(`start server PORT ${PORT}`);
+        });
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+Start()

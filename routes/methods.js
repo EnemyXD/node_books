@@ -1,53 +1,29 @@
 const express = require("express");
 const router = express.Router();
-const books = require("../models");
+const Book = require("../models/book");
 const fileMiddleware = require("../middleware/file");
-const fs = require("fs");
-
-let store = {
-  user: {
-    id: 0,
-    login: "test",
-    mail: "test@mail.ru",
-  },
-  library: [],
-};
-
-for (let i = 0; i < 3; i++) {
-  const book = new books();
-  store.library.push(book);
-  fs.appendFile(
-    __dirname + `/../public/${book.fileBook}.txt`,
-    `${book.id}`,
-    (err) => {
-      if (err) throw err;
-    }
-  );
-}
 
 router.post("/login", (req, res) => {
   res.status(201).json(store.user);
 });
 router.get("/", (req, res) => {
-  const library = store.library;
-  res.json(library);
+  const books = await Book.find();
+  res.json(books);
 });
 router.get("/:id", (req, res) => {
-  const library = store.library;
   const { id } = req.params;
 
-  const idx = library.findIndex((el) => el.id === id);
+  const book = await Book.findById(id);
 
-  if (idx !== -1) {
-    
+  if (book) {
+    res.json(book);
   } else {
-    res.status(404).json("NOT FOUND");
+    res.status(404).redirect("NOT FOUND");
   }
 });
 router.post("", (req, res) => {
   const { ...args } = req.body;
-  console.log(...args);
-  const book = new books({ ...args });
+  const book = new Book({ ...args });
   store.library.push(book);
 
   res.status(201);
@@ -57,34 +33,21 @@ router.put("/:id", (req, res) => {
   const { id } = req.params;
   const { title, description, authors, favorite, fileCover, fileName } =
     req.body;
-  const idx = store.library.findIndex((el) => el.id === id);
 
-  if (idx !== -1) {
-    store.library[idx] = {
-      ...store.library[idx],
-      title: title,
-      description: description,
-      authors: authors,
-      favorite: favorite,
-      fileCover: fileCover,
-      fileName: fileName,
-    };
-    res.json(store.library[idx]);
-  } else {
-    res.status(404).json("NOT FOUND");
-  }
+  const update = {
+    title: title,
+    authors: authors,
+    description: description,
+  };
+
+  await Book.findByIdAndUpdate(id, update);
+
+  res.status(201);
 });
 router.delete("/:id", (req, res) => {
   const { id } = req.params;
-
-  const idx = store.library.findIndex((el) => el.id === id);
-
-  if (idx !== -1) {
-    store.library.splice(idx, 1);
-    res.json(true);
-  } else {
-    res.status(404).json("NOT FOUND");
-  }
+  await Book.deleteOne({ _id: id });
+  res.json(true);
 });
 router.post("/upload", fileMiddleware.single("books"), (req, res) => {
   if (req.file) {
@@ -97,21 +60,21 @@ router.post("/upload", fileMiddleware.single("books"), (req, res) => {
   }
 });
 router.get("/:id/download", (req, res) => {
-  const { id } = req.params;
+  // const { id } = req.params;
 
-  const object = store.library.filter((el) => el.id === id);
+  // const object = store.library.filter((el) => el.id === id);
 
-  if (object) {
-    res.download(
-      __dirname + `/../public/${object[0].fileBook}.txt`,
-      "cover.txt",
-      (err) => {
-        if (err) res.status(404).json;
-      }
-    );
-  } else {
-    res.status(404).json("NOT FOUND FILE");
-  }
+  // if (object) {
+  //   res.download(
+  //     __dirname + `/../public/${object[0].fileBook}.txt`,
+  //     "cover.txt",
+  //     (err) => {
+  //       if (err) res.status(404).json;
+  //     }
+  //   );
+  // } else {
+  //   res.status(404).json("NOT FOUND FILE");
+  // }
 });
 
 module.exports = router;

@@ -9,5 +9,6 @@ ADD middleware /code/middleware
 ADD public /code/public
 ADD routes /code/routes
 ADD views /code/views
+ADD models /code/models
 
 CMD ["npm", "start"]
