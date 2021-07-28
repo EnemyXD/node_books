@@ -1,11 +1,11 @@
 const { Schema, model } = require("mongoose");
 const uid = require("node-unique-id-generator");
 
-const bookSchema = new Schema({
-  id: {
-    type: String,
-    default: uid.generateUniqueId(),
-  },
+const bookScheme = new Schema({
+  // id: {
+  //   type: String,
+  //   default: `${uid.generateUniqueId()}`,
+  // },
   title: {
     type: String,
     required: true,
@@ -36,4 +36,4 @@ const bookSchema = new Schema({
   },
 });
 
-module.exports = model("Book", bookSchema);
+module.exports =  bookScheme;

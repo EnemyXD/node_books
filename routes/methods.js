@@ -6,48 +6,68 @@ const fileMiddleware = require("../middleware/file");
 router.post("/login", (req, res) => {
   res.status(201).json(store.user);
 });
-router.get("/", (req, res) => {
-  const books = await Book.find();
-  res.json(books);
-});
-router.get("/:id", (req, res) => {
-  const { id } = req.params;
-
-  const book = await Book.findById(id);
-
-  if (book) {
-    res.json(book);
-  } else {
-    res.status(404).redirect("NOT FOUND");
+router.get("/", async (req, res) => {
+  try {
+    const books = await Book.find();
+    res.json(books);
+  } catch (e) {
+    console.log(e);
   }
 });
-router.post("", (req, res) => {
-  const { ...args } = req.body;
-  const book = new Book({ ...args });
-  store.library.push(book);
-
-  res.status(201);
-  res.json(book);
-});
-router.put("/:id", (req, res) => {
+router.get("/:id", async (req, res) => {
   const { id } = req.params;
-  const { title, description, authors, favorite, fileCover, fileName } =
-    req.body;
 
-  const update = {
-    title: title,
-    authors: authors,
-    description: description,
-  };
+  try {
+    const book = await Book.findById(id);
 
-  await Book.findByIdAndUpdate(id, update);
-
-  res.status(201);
+    if (book) {
+      res.json(book);
+    } else {
+      res.status(404).redirect("NOT FOUND");
+    }
+  } catch (e) {
+    console.log(e);
+  }
 });
-router.delete("/:id", (req, res) => {
-  const { id } = req.params;
-  await Book.deleteOne({ _id: id });
-  res.json(true);
+router.post("", async (req, res) => {
+  try {
+    const { ...args } = req.body;
+    const book = new Book({ ...args });
+    store.library.push(book);
+
+    res.status(201);
+    res.json(book);
+  } catch (e) {
+    console.log(e);
+  }
+});
+router.put("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, description, authors, favorite, fileCover, fileName } =
+      req.body;
+
+    const update = {
+      title: title,
+      authors: authors,
+      description: description,
+    };
+
+    await Book.findByIdAndUpdate(id, update);
+
+    res.status(201);
+  } catch (e) {
+    console.log(e);
+  }
+});
+router.delete("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Book.deleteOne({ _id: id });
+    res.json(true);
+  } catch (e) {
+    console.log(e);
+  }
 });
 router.post("/upload", fileMiddleware.single("books"), (req, res) => {
   if (req.file) {
@@ -61,9 +81,7 @@ router.post("/upload", fileMiddleware.single("books"), (req, res) => {
 });
 router.get("/:id/download", (req, res) => {
   // const { id } = req.params;
-
   // const object = store.library.filter((el) => el.id === id);
-
   // if (object) {
   //   res.download(
   //     __dirname + `/../public/${object[0].fileBook}.txt`,
