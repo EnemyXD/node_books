@@ -1,10 +1,56 @@
 const express = require("express");
 const router = express.Router();
 const fileMiddleware = require("../../middleware/file");
-const Book = require("../../index");
+const Book = require("../../models/book");
+const User = require("../../models/users");
+const passport = require("passport");
 
+async function createAdmin() {
+  const admin = new User({ username: "admin", password: "pass" });
+  try {
+    await admin.save();
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+createAdmin();
+router.get(
+  "/profile",
+  (req, res, next) => {
+    if (!req.isAuthenticated || !req.isAuthenticated()) {
+      if (req.session) {
+        req.session.returnTo = req.originalUrl || req.url;
+      }
+      return res.redirect("/library/login");
+    }
+    next();
+  },
+  (req, res) => {
+    res.render("profile", { title: "Профиль", user: req.user });
+  }
+);
+router.get("/logout", (req, res) => {
+  req.logOut();
+  res.redirect("/library");
+});
+router.get("/login", (req, res) => {
+  res.render("login", { title: "Авторизация" });
+});
+router.post(
+  "/login",
+  passport.authenticate("local", {
+    failureRedirect: "/library/login",
+  }),
+  (req, res) => {
+    console.log("req.user: " + req.user);
+    res.redirect("/library");
+  }
+);
 router.get("/", async (req, res) => {
   try {
+    console.log("ROUTES");
+    console.log(Book);
     const books = await Book.find();
     res.render("books/index", {
       title: "Книги",

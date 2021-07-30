@@ -1,5 +1,11 @@
 const { Schema, model } = require("mongoose");
 const uid = require("node-unique-id-generator");
+const mongoose = require("mongoose");
+
+const UserDB = process.env.DB_USERNAME || "admin";
+const PasswordDB = process.env.DB_PASSWORD || "pass";
+const NameDB = process.env.DB_NAME_LIBRARY || "library";
+const HostDB = process.env.DB_HOST || "mongodb://mongodb:27017/";
 
 const bookScheme = new Schema({
   // id: {
@@ -36,4 +42,17 @@ const bookScheme = new Schema({
   },
 });
 
-module.exports =  bookScheme;
+try {
+  console.log("CONNECTDB");
+  const mongo = mongoose.createConnection(HostDB, {
+    user: UserDB,
+    pass: PasswordDB,
+    dbName: NameDB,
+  });
+  const Book = mongo.model("Book", bookScheme);
+  console.log(Book);
+  module.exports = Book;
+} catch (e) {
+  console.log(e);
+  process.exit(131);
+}

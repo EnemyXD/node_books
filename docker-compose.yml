@@ -1,36 +1,38 @@
 services:
-    mongodb:
-        image: mongo:latest
-        restart: always
-        expose: 
-            - 27017
-        environment: 
-            - MONGO_INIT_DATABASE={DB_NAME_INIT:-library}
-            - MONGO_INITDB_ROOT_USERNAME=root
-            - MONGO_INITDB_ROOT_PASSWORD=12345
-    mongo-express:
-        image: mongo-express
-        restart: always
-        ports: 
-            - 8081:8081
-        environment: 
-            - ME_CONFIG_MONGODB_SERVER=mongodb
-            - ME_CONFIG_MONGODB_ADMINUSERNAME=root
-            - ME_CONFIG_MONGODB_ADMINPASSWORD=12345
-        depends_on:
-            - mongodb
-    server:
-        image: enemygg/library:latest
-        restart: always
-        volumes: 
-            - c:\users\user\documents\rn_first-app\it-kamasutra\node_books\public:/code/public
-        ports: 
-            - 80:3000
-        environment: 
-            - DB_NAME_USERS=users
-            - SERVER_PORT=3000
-            - DB_HOST=mongodb://mongodb:27017
-            - DB_USERNAME=root
-            - DB_PASSWORD=12345
-        depends_on:
-            - mongodb-express
+  mongodb:
+    image: mongo:latest
+    restart: always
+    expose:
+      - 27017
+    environment:
+      - MONGO_INIT_DATABASE={DB_NAME_INIT:-library}
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=12345
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=root
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=12345
+    depends_on:
+      - mongodb
+  server:
+    image: enemygg/library:latest
+    restart: always
+    volumes:
+      - c:\users\user\documents\rn_first-app\it-kamasutra\node_books\public:/code/public
+    ports:
+      - 80:3000
+    environment:
+      - DB_NAME_USERS=users
+      - DB_NAME_LIBRARY=library
+      - SERVER_PORT=3000
+      - DB_HOST=mongodb://mongodb:27017
+      - DB_USERNAME=root
+      - DB_PASSWORD=12345
+      - COOKIE_SECRET=netology
+    depends_on:
+      - mongodb-express

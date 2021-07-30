@@ -1,7 +1,9 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const mongoose = require("mongoose");
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
+const User = require("./models/users");
 
 const loggerMiddleware = require("./middleware/logger");
 const errorMiddleware = require("./middleware/error");
@@ -10,21 +12,65 @@ const booksRouter = require("./routes/methods");
 const indexRouter = require("./routes/indexRouter");
 const urlBooksRouter = require("./routes/urlRouter/methods");
 
-const bookScheme = require("./models/book");
-
 const PORT = process.env.SERVER_PORT || 3000;
-const UserDB = process.env.DB_USERNAME || "admin";
-const PasswordDB = process.env.DB_PASSWORD || "pass";
-const NameDB = process.env.DB_NAME || "library";
-const HostDB = process.env.DB_HOST || "mongodb://mongodb:27017/";
+
+const options = {
+  usernameField: "username",
+  passwordField: "password",
+  passReqToCallback: false,
+};
+
+passport.use(
+  "local",
+  new LocalStrategy(options, async (username, password, done) => {
+    await User.findOne({ username: username }, (err, user) => {
+      if (err) {
+        return done(err);
+      }
+      if (!user) {
+        return done(null, false);
+      }
+      if (user.password !== password) {
+        return done(null, false);
+      }
+      console.log(user);
+      return done(null, user);
+    });
+  })
+);
+
+passport.serializeUser((user, cb) => {
+  console.log(user);
+  cb(null, user.id);
+});
+
+passport.deserializeUser(async (id, cb) => {
+  try {
+    await User.find({ id }, (err, user) => {
+      cb(err, user);
+    });
+  } catch (e) {
+    console.log(e);
+  }
+});
 
 const app = express();
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(
+  require("express-session")({
+    secret: process.env.COOKIE_SECRET,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 app.use(cors());
 app.set("view engine", "ejs");
 
 // app.use(loggerMiddleware);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use("/public", express.static(__dirname + "/public"));
 
@@ -34,30 +80,6 @@ app.use("/api/library", booksRouter);
 
 app.use(errorMiddleware);
 
-async function Start() {
-  try {
-    const mongo = mongoose.createConnection(HostDB, {
-      user: UserDB,
-      pass: PasswordDB,
-      dbName: NameDB,
-    });
-
-    module.exports = mongo.model("Book", bookScheme);
-
-    // mongoose.connect(HostDB, {
-    //     user: UserDB,
-    //     pass: PasswordDB,
-    //     dbName: NameDB,
-    //     useNewUrlParser: true,
-    //     useUnifiedTopology: true
-    // })
-
-    app.listen(PORT, () => {
-      console.log(`start server PORT ${PORT}`);
-    });
-  } catch (e) {
-    console.log(e);
-  }
-}
-
-Start();
+app.listen(PORT, () => {
+  console.log(`start server PORT ${PORT}`);
+});
