@@ -15,6 +15,19 @@ async function createAdmin() {
 }
 
 createAdmin();
+router.post("/signin", async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    const newUser = new User({ username: username, password: password });
+    await newUser.save();
+    res.redirect("/library/login");
+  } catch (e) {
+    console.log(e);
+  }
+});
+router.get("/signin", (req, res) => {
+  res.render("signin", { title: "Регистрация" });
+});
 router.get(
   "/profile",
   (req, res, next) => {
@@ -27,7 +40,14 @@ router.get(
     next();
   },
   (req, res) => {
-    res.render("profile", { title: "Профиль", user: req.user });
+    const user = req.user[0];
+    console.log(user);
+    console.log(`${user.username}` + `${user.id}`);
+    res.render("profile", {
+      title: "Профиль",
+      username: user.username,
+      id: user.id,
+    });
   }
 );
 router.get("/logout", (req, res) => {
