@@ -4,6 +4,7 @@ const fileMiddleware = require("../../middleware/file");
 const Book = require("../../models/book");
 const User = require("../../models/users");
 const passport = require("passport");
+const path = require("path");
 
 async function createAdmin() {
   const admin = new User({ username: "admin", password: "pass" });
@@ -15,6 +16,9 @@ async function createAdmin() {
 }
 
 createAdmin();
+router.get("/discussion/:id", (req, res) => {
+  res.sendFile(path.resolve("/code/views/discussionExample.html"));
+});
 router.post("/signin", async (req, res) => {
   const { username, password } = req.body;
   try {

@@ -5,12 +5,16 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const User = require("./models/users");
 
+const http = require("http");
+const sockerIO = require("socket.io");
+
 const loggerMiddleware = require("./middleware/logger");
 const errorMiddleware = require("./middleware/error");
 
 const booksRouter = require("./routes/methods");
 const indexRouter = require("./routes/indexRouter");
 const urlBooksRouter = require("./routes/urlRouter/methods");
+const { Socket } = require("dgram");
 
 const PORT = process.env.SERVER_PORT || 3000;
 
@@ -55,6 +59,8 @@ passport.deserializeUser(async (id, cb) => {
 });
 
 const app = express();
+const server = http.Server(app);
+const io = sockerIO(server);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
@@ -80,6 +86,36 @@ app.use("/api/library", booksRouter);
 
 app.use(errorMiddleware);
 
-app.listen(PORT, () => {
+io.on("connection", (socket) => {
+  const { id } = socket;
+  console.log("socket " + socket);
+  console.log("socket connected: " + id);
+
+  socket.on("message-to-me", (msg) => {
+    msg.type = "me";
+    socket.emit("message-to-me", msg);
+  });
+
+  socket.on("message-to-all", (msg) => {
+    msg.type = "all";
+    socket.broadcast.emit("message-to-all", msg);
+    socket.emit("message-to-all", msg);
+  });
+
+  const { roomName } = socket.handshake.query;
+  console.log(`Socket roomName: ${roomName}`);
+  socket.join(roomName);
+  socket.on("message-to-room", (msg) => {
+    msg.type = `room: ${roomName}`;
+    socket.to(roomName).emit("message-to-room", msg);
+    socket.emit("message-to-room", msg);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("socket disconnected: " + id);
+  });
+});
+
+server.listen(PORT, () => {
   console.log(`start server PORT ${PORT}`);
 });

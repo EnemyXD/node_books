@@ -13,6 +13,7 @@
                 <p class="card-text"><%= book.description %>.</p>
 
                 <div class="text-right">
+                    <a class="btn btn-primary" href="/library/discussion/<%= book.id %>" role="button">Обсуждение</a>
                     <a class="btn btn-sm btn-primary" href="/library/update/<%= book.id %>">
                         <i class="fa fa-pencil" aria-hidden="true"></i>
                     </a>
