@@ -14,7 +14,6 @@ const errorMiddleware = require("./middleware/error");
 const booksRouter = require("./routes/methods");
 const indexRouter = require("./routes/indexRouter");
 const urlBooksRouter = require("./routes/urlRouter/methods");
-const { Socket } = require("dgram");
 
 const PORT = process.env.SERVER_PORT || 3000;
 

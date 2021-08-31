@@ -7,7 +7,17 @@ const PasswordDB = process.env.DB_PASSWORD || "pass";
 const NameDB = process.env.DB_NAME_LIBRARY || "library";
 const HostDB = process.env.DB_HOST || "mongodb://mongodb:27017/";
 
-const bookScheme = new Schema({
+interface Book {
+  title: string;
+  description: string;
+  authors: string;
+  date: string;
+  favorite: string;
+  fileCover: string;
+  fileName: string;
+}
+
+const bookScheme: Book = new Schema({
   // id: {
   //   type: String,
   //   default: `${uid.generateUniqueId()}`,

@@ -35,4 +35,4 @@ services:
       - DB_PASSWORD=12345
       - COOKIE_SECRET=netology
     depends_on:
-      - mongodb-express
+      - mongo-express

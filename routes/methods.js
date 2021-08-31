@@ -4,6 +4,7 @@ const Book = require("../models/book");
 const fileMiddleware = require("../middleware/file");
 
 router.post("/login", (req, res) => {
+  console.log(req.body);
   res.status(201).json(store.user);
 });
 router.get("/", async (req, res) => {
