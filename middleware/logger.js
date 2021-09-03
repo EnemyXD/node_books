@@ -1,6 +1,10 @@
-const fs = require("fs");
-const os = require("os");
-const moment = require("moment");
+import fs from "fs";
+import os from "os";
+import moment from "moment";
+
+// const fs = require("fs");
+// const os = require("os");
+// const moment = require("moment");
 
 module.exports = (req, res, next) => {
   let now = new Date();

@@ -1,5 +1,8 @@
-const multer = require("multer");
-const moment = require("moment");
+import multer from "multer";
+import moment from "moment";
+
+// const multer = require("multer");
+// const moment = require("moment");
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
@@ -10,7 +13,6 @@ const storage = multer.diskStorage({
     cb(null, `${date}-${file.originalname}`);
   },
 });
-
 
 const allowedType = ["text/plain", "image/png", "image/jpeg"];
 

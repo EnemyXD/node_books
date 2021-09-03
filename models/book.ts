@@ -1,13 +1,17 @@
-const { Schema, model } = require("mongoose");
-const uid = require("node-unique-id-generator");
-const mongoose = require("mongoose");
+import { Schema } from "mongoose";
+import mongoose from "mongoose";
+import uid from "node-unique-id-generator";
+
+// const { Schema, model } = require("mongoose");
+// const uid = require("node-unique-id-generator");
+// const mongoose = require("mongoose");
 
 const UserDB = process.env.DB_USERNAME || "admin";
 const PasswordDB = process.env.DB_PASSWORD || "pass";
 const NameDB = process.env.DB_NAME_LIBRARY || "library";
 const HostDB = process.env.DB_HOST || "mongodb://mongodb:27017/";
 
-interface Book {
+interface IBook {
   title: string;
   description: string;
   authors: string;
@@ -17,7 +21,7 @@ interface Book {
   fileName: string;
 }
 
-const bookScheme: Book = new Schema({
+const bookScheme = new Schema({
   // id: {
   //   type: String,
   //   default: `${uid.generateUniqueId()}`,
@@ -60,7 +64,7 @@ try {
     dbName: NameDB,
   });
   const Book = mongo.model("Book", bookScheme);
-  console.log(Book);
+  // export default Book;
   module.exports = Book;
 } catch (e) {
   console.log(e);

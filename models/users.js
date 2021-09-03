@@ -1,6 +1,9 @@
-const { Schema, model } = require("mongoose");
-const mongoose = require("mongoose");
-const uid = require("node-unique-id-generator");
+import { Schema } from "mongoose";
+import mongoose from "mongoose";
+import uid from "node-unique-id-generator";
+// const { Schema, model } = require("mongoose");
+// const mongoose = require("mongoose");
+// const uid = require("node-unique-id-generator");
 
 const UserDB = process.env.DB_USERNAME || "admin";
 const PasswordDB = process.env.DB_PASSWORD || "pass";
@@ -29,9 +32,8 @@ try {
     dbName: NameDB,
   });
   const User = mongo.model("User", userSchema);
-  module.exports = User;
+  module.export = User;
 } catch (e) {
   console.log(e);
   process.exit(131);
 }
-

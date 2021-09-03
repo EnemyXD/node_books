@@ -1,19 +1,37 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-const passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy;
-const User = require("./models/users");
+import "reflect-metadata";
+import express from "express";
+import bodyParser from "body-parser";
+import cors from "cors";
+import passport from "passport";
+import { Strategy } from "passport-local";
+import User from "./models/users.js";
 
-const http = require("http");
-const sockerIO = require("socket.io");
+import http from "http";
+import socketIO from "socket.io";
 
-const loggerMiddleware = require("./middleware/logger");
-const errorMiddleware = require("./middleware/error");
+import loggerMiddleware from "./middleware/logger.js";
+import errorMiddleware from "./middleware/error.js";
 
-const booksRouter = require("./routes/methods");
-const indexRouter = require("./routes/indexRouter");
-const urlBooksRouter = require("./routes/urlRouter/methods");
+import booksRouter from "./routes/methods.js";
+import indexRouter from "./routes/indexRouter.js";
+import urlBooksRouter from "./routes/urlRouter/methods.js";
+// require("reflect-metadata");
+// const express = require("express");
+// const bodyParser = require("body-parser");
+// const cors = require("cors");
+// const passport = require("passport");
+// const LocalStrategy = require("passport-local").Strategy;
+// const User = require("./models/users");
+
+// const http = require("http");
+// const sockerIO = require("socket.io");
+
+// const loggerMiddleware = require("./middleware/logger");
+// const errorMiddleware = require("./middleware/error");
+
+// const booksRouter = require("./routes/methods");
+// const indexRouter = require("./routes/indexRouter");
+// const urlBooksRouter = require("./routes/urlRouter/methods");
 
 const PORT = process.env.SERVER_PORT || 3000;
 
@@ -25,7 +43,7 @@ const options = {
 
 passport.use(
   "local",
-  new LocalStrategy(options, async (username, password, done) => {
+  new Strategy(options, async (username, password, done) => {
     await User.findOne({ username: username }, (err, user) => {
       if (err) {
         return done(err);
@@ -59,7 +77,7 @@ passport.deserializeUser(async (id, cb) => {
 
 const app = express();
 const server = http.Server(app);
-const io = sockerIO(server);
+const io = socketIO(server);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(

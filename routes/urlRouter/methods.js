@@ -1,10 +1,22 @@
-const express = require("express");
+import express from "express";
+import fileMiddleware from "../../middleware/file";
+import Book from "../../models/book";
+import User from "../../models/users";
+import passport from "passport";
+import path from "path";
+import myContainer from "../../container";
+import BookRepository from "../../BooksRepository";
+// const express = require("express");
+// const router = express.Router();
+// const fileMiddleware = require("../../middleware/file");
+// const Book = require("../../models/book");
+// const User = require("../../models/users");
+// const passport = require("passport");
+// const path = require("path");
+// const myContainer = require("../../container");
+// const BookRepository = require("../../BooksRepository");
+
 const router = express.Router();
-const fileMiddleware = require("../../middleware/file");
-const Book = require("../../models/book");
-const User = require("../../models/users");
-const passport = require("passport");
-const path = require("path");
 
 async function createAdmin() {
   const admin = new User({ username: "admin", password: "pass" });
@@ -187,5 +199,11 @@ router.get("/:id/download", (req, res) => {
     res.status(404).json("NOT FOUND FILE");
   }
 });
+router.get("/bookRepository/:id", async (req, res) => {
+  const repo = myContainer.get(BookRepository);
+  const book = await repo.getBook(req.params.id);
+  console.log(book);
+  res.json(book);
+});
 
-module.exports = router;
+export default router;

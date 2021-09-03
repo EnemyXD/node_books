@@ -1,7 +1,9 @@
-const Uid = require("node-unique-id-generator");
-const moment = require("moment");
+import Uid from "node-unique-id-generator";
+import moment from "moment";
+// const Uid = require("node-unique-id-generator");
+// const moment = require("moment");
 
-class book {
+export class book {
   constructor(
     title = "--------",
     description = "",
@@ -22,4 +24,4 @@ class book {
     }`;
   }
 }
-module.exports = book;
+// module.exports = book;
