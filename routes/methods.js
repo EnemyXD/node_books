@@ -1,6 +1,6 @@
 import express from "express";
-import Book from "../models/book";
-import fileMiddleware from "../middleware/file";
+import Book from "../models/book.js";
+import fileMiddleware from "../middleware/file.js";
 // const express = require("express");
 // const router = express.Router();
 // const Book = require("../models/book");

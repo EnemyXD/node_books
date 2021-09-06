@@ -1,5 +1,5 @@
 import { Container } from "inversify";
-import { BookRepository } from "./BooksRepository";
+import { BookRepository } from "./BooksRepository.js";
 // const { Container } = require("inversify");
 // const BookRepository = require("./BooksRepository.js");
 

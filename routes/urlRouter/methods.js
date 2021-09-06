@@ -1,11 +1,11 @@
 import express from "express";
-import fileMiddleware from "../../middleware/file";
-import Book from "../../models/book";
-import User from "../../models/users";
+import fileMiddleware from "../../middleware/file.js";
+import Book from "../../models/book.js";
+import User from "../../models/users.js";
 import passport from "passport";
 import path from "path";
-import myContainer from "../../container";
-import BookRepository from "../../BooksRepository";
+import myContainer from "../../container.js";
+import BookRepository from "../../BooksRepository.js";
 // const express = require("express");
 // const router = express.Router();
 // const fileMiddleware = require("../../middleware/file");
