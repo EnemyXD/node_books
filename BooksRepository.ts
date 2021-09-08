@@ -1,7 +1,7 @@
-import { injectable } from "inversify";
+const { injectable } = require("inversify");
 
 @injectable()
-export class IBookRepository {
+class IBookRepository {
   id: number;
   title: string;
   authors: string;
@@ -19,3 +19,5 @@ export class IBookRepository {
   updateBook(id: number): void {}
   deleteBook(id: number): void {}
 }
+
+module.exports = IBookRepository;

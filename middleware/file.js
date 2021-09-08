@@ -1,5 +1,5 @@
-import multer from "multer";
-import moment from "moment";
+const multer = require("multer");
+const moment = require("moment");
 
 // const multer = require("multer");
 // const moment = require("moment");

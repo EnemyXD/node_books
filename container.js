@@ -1,9 +1,10 @@
-import { Container } from "inversify";
-import { BookRepository } from "./BooksRepository.js";
-// const { Container } = require("inversify");
-// const BookRepository = require("./BooksRepository.js");
+// import { Container } from "inversify";
+// import  BookRepository  from "./BooksRepository.js";
+const { Container } = require("inversify");
+const IBookRepository = require("./BooksRepository.js");
 
-export const myContainer = new Container();
-myContainer.bind(BookRepository).toSelf();
+const myContainer = new Container();
+myContainer.bind(IBookRepository).toSelf();
 
-// module.exports = myContainer;
+const repo = myContainer.get(IBookRepository);
+module.exports = myContainer;

@@ -8,9 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.IBookRepository = void 0;
-var inversify_1 = require("inversify");
+var injectable = require("inversify").injectable;
 var IBookRepository = /** @class */ (function () {
     function IBookRepository(id, title, authors, description) {
         this.id = id;
@@ -24,10 +22,10 @@ var IBookRepository = /** @class */ (function () {
     IBookRepository.prototype.updateBook = function (id) { };
     IBookRepository.prototype.deleteBook = function (id) { };
     IBookRepository = __decorate([
-        (0, inversify_1.injectable)(),
+        injectable(),
         __metadata("design:paramtypes", [Number, String, String, String])
     ], IBookRepository);
     return IBookRepository;
 }());
-exports.IBookRepository = IBookRepository;
+module.exports = IBookRepository;
 //# sourceMappingURL=BooksRepository.js.map

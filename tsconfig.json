@@ -97,6 +97,7 @@
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
   },
+  "files": ["./models/book.ts", "./BooksRepository.ts"],
   "include": ["*.ts", "*.js", "*.json"],
   "exclude": ["/node_modules"]
 }

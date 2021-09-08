@@ -1,12 +1,11 @@
-import express from "express";
-import Book from "../models/book.js";
-import fileMiddleware from "../middleware/file.js";
-// const express = require("express");
-// const router = express.Router();
-// const Book = require("../models/book");
-// const fileMiddleware = require("../middleware/file");
-
+// import express from "express";
+// import  Book from "../models/book.js";
+// import  fileMiddleware from "../middleware/file.js";
+const express = require("express");
 const router = express.Router();
+const Book = require("../models/book");
+const fileMiddleware = require("../middleware/file");
+
 
 router.post("/login", (req, res) => {
   console.log(req.body);
@@ -100,5 +99,5 @@ router.get("/:id/download", (req, res) => {
   //   res.status(404).json("NOT FOUND FILE");
   // }
 });
-export default router;
-// module.exports = router;
+// export default router;
+module.exports = router;

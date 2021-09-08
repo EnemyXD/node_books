@@ -1,11 +1,11 @@
-import express from "express";
-import fileMiddleware from "../../middleware/file.js";
-import Book from "../../models/book.js";
-import User from "../../models/users.js";
-import passport from "passport";
-import path from "path";
-import myContainer from "../../container.js";
-import BookRepository from "../../BooksRepository.js";
+const express = require("express");
+const fileMiddleware = require("../../middleware/file");
+const Book = require("../../models/book");
+const User = require("../../models/users");
+const passport = require("passport");
+const path = require("path");
+const myContainer = require("../../container");
+const IBookRepository = require("../../BooksRepository");
 // const express = require("express");
 // const router = express.Router();
 // const fileMiddleware = require("../../middleware/file");
@@ -200,10 +200,9 @@ router.get("/:id/download", (req, res) => {
   }
 });
 router.get("/bookRepository/:id", async (req, res) => {
-  const repo = myContainer.get(BookRepository);
-  const book = await repo.getBook(req.params.id);
-  console.log(book);
-  res.json(book);
+  const repo = myContainer.get(IBookRepository);
+  console.log(repo);
+  //const book = await repo.getBook(req.params.id);
 });
 
-export default router;
+module.exports = router;

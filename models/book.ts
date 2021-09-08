@@ -1,6 +1,5 @@
-import pkg from "mongoose";
-import mongoose from "mongoose";
-const { Schema } = pkg;
+const { Schema } = require("mongoose");
+const mongoose = require("mongoose");
 
 // const { Schema, model } = require("mongoose");
 // const uid = require("node-unique-id-generator");
@@ -56,11 +55,6 @@ const bookScheme = new Schema({
   },
 });
 
-let Book;
-
-if (Book) {
-  Book + 1;
-}
 try {
   console.log("CONNECTDB");
   const mongo = mongoose.createConnection(HostDB, {
@@ -68,10 +62,9 @@ try {
     pass: PasswordDB,
     dbName: NameDB,
   });
-  Book = mongo.model("Book", bookScheme);
+  const Book = mongo.model("Book", bookScheme);
+  module.exports = Book;
 } catch (e) {
   console.log(e);
   process.exit(131);
 }
-
-export default Book;

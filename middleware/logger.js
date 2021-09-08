@@ -1,6 +1,6 @@
-import fs from "fs";
-import os from "os";
-import moment from "moment";
+const fs = require("fs");
+const os = require("os");
+const moment = require("moment");
 
 // const fs = require("fs");
 // const os = require("os");
