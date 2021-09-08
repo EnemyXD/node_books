@@ -2,16 +2,16 @@ const { injectable } = require("inversify");
 
 @injectable()
 class IBookRepository {
-  id: number;
-  title: string;
-  authors: string;
-  description: string;
-  constructor(id: number, title: string, authors: string, description: string) {
-    this.id = id;
-    this.title = title;
-    this.authors = authors;
-    this.description = description;
-  }
+  // id: number;
+  // title: string;
+  // authors: string;
+  // description: string;
+  // constructor(id: number, title: string, authors: string, description: string) {
+  //   this.id = id;
+  //   this.title = title;
+  //   this.authors = authors;
+  //   this.description = description;
+  // }
 
   createBook(): void {}
   getBook(id: number): void {}

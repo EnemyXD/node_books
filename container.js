@@ -6,5 +6,4 @@ const IBookRepository = require("./BooksRepository.js");
 const myContainer = new Container();
 myContainer.bind(IBookRepository).toSelf();
 
-const repo = myContainer.get(IBookRepository);
 module.exports = myContainer;

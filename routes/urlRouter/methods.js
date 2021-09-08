@@ -201,8 +201,8 @@ router.get("/:id/download", (req, res) => {
 });
 router.get("/bookRepository/:id", async (req, res) => {
   const repo = myContainer.get(IBookRepository);
-  console.log(repo);
-  //const book = await repo.getBook(req.params.id);
+  const book = await repo.getBook(req.params.id);
+  console.log(book);
 });
 
 module.exports = router;
