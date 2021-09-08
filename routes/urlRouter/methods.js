@@ -202,7 +202,7 @@ router.get("/:id/download", (req, res) => {
 router.get("/bookRepository/:id", async (req, res) => {
   const repo = myContainer.get(IBookRepository);
   const book = await repo.getBook(req.params.id);
-  console.log(book);
+  res.json(book);
 });
 
 module.exports = router;
