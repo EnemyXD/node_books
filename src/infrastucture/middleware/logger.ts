@@ -1,12 +1,11 @@
-const fs = require("fs");
-const os = require("os");
-const moment = require("moment");
-
 // const fs = require("fs");
 // const os = require("os");
 // const moment = require("moment");
+import fs from "fs";
+import os from "os";
+import moment from "moment";
 
-module.exports = (req, res, next) => {
+export default (req: any, res: any, next: any) => {
   let now = new Date();
   let hour = now.getHours();
   let minutes = now.getMinutes();

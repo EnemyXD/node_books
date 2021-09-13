@@ -1,20 +1,22 @@
-const express = require("express");
-const fileMiddleware = require("../../middleware/file");
-const Book = require("../../models/book");
-const User = require("../../models/users");
-const passport = require("passport");
-const path = require("path");
-const myContainer = require("../../container");
-const IBookRepository = require("../../BooksRepository");
 // const express = require("express");
-// const router = express.Router();
 // const fileMiddleware = require("../../middleware/file");
 // const Book = require("../../models/book");
 // const User = require("../../models/users");
 // const passport = require("passport");
 // const path = require("path");
 // const myContainer = require("../../container");
-// const BookRepository = require("../../BooksRepository");
+// const IBookRepository = require("../../BooksRepository");
+
+import express from "express";
+import fileMiddleware from "../../../infrastucture/middleware/file";
+import Book from "../../../infrastucture/mongo-connector/BookModel";
+import User from "../../../user/users";
+import passport from "passport";
+import path from "path";
+import container from "../../../infrastucture/container";
+import { BookServiseBase } from "../../../book/BooksRepository";
+
+import { IBook } from "../../../book/IBook";
 
 const router = express.Router();
 
@@ -46,7 +48,7 @@ router.get("/signin", (req, res) => {
 });
 router.get(
   "/profile",
-  (req, res, next) => {
+  (req: any, res, next) => {
     if (!req.isAuthenticated || !req.isAuthenticated()) {
       if (req.session) {
         req.session.returnTo = req.originalUrl || req.url;
@@ -55,7 +57,7 @@ router.get(
     }
     next();
   },
-  (req, res) => {
+  (req: any, res) => {
     const user = req.user[0];
     console.log(user);
     console.log(`${user.username}` + `${user.id}`);
@@ -184,25 +186,25 @@ router.post("/upload", fileMiddleware.single("books"), (req, res) => {
     res.json(null);
   }
 });
-router.get("/:id/download", (req, res) => {
-  const { id } = req.params;
-  const object = store.library.filter((el) => el.id === id);
-  if (object) {
-    res.download(
-      __dirname + `/../public/${object[0].fileBook}.txt`,
-      "cover.txt",
-      (err) => {
-        if (err) res.status(404).json;
-      }
-    );
-  } else {
-    res.status(404).json("NOT FOUND FILE");
-  }
-});
-router.get("/bookRepository/:id", async (req, res) => {
-  const repo = myContainer.get(IBookRepository);
-  const book = await repo.getBook(req.params.id);
+// router.get("/:id/download", (req, res) => {
+//   const { id } = req.params;
+//   const object = store.library.filter((el) => el.id === id);
+//   if (object) {
+//     res.download(
+//       __dirname + `/../public/${object[0].fileBook}.txt`,
+//       "cover.txt",
+//       (err) => {
+//         if (err) res.status(404).json;
+//       }
+//     );
+//   } else {
+//     res.status(404).json("NOT FOUND FILE");
+//   }
+// });
+router.get("/bookRepository/:id", async (req: any, res) => {
+  const service: BookServiseBase = container.get(BookServiseBase);
+  const book = await service.getBook(req.params.id);
   res.json(book);
 });
 
-module.exports = router;
+export default router;

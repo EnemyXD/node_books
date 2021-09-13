@@ -1,37 +1,38 @@
-// import "reflect-metadata";
-// import express from "express";
-// import bodyParser from "body-parser";
-// import cors from "cors";
-// import passport from "passport";
-// import { Strategy } from "passport-local";
-// import User from "./models/users.js";
+import "reflect-metadata";
+import express from "express";
+import bodyParser from "body-parser";
+import cors from "cors";
+import passport from "passport";
+import { IStrategyOptions, Strategy } from "passport-local";
+import User, { IUser } from "./user/users";
 
-// import http from "http";
-// import socketIO from "socket.io";
+import http from "http";
+import * as socketIO from "socket.io";
 
-// import loggerMiddleware from "./middleware/logger.js";
-// import errorMiddleware from "./middleware/error.js";
+import loggerMiddleware from "./infrastucture/middleware/logger";
+import errorMiddleware from "./infrastucture/middleware/error";
 
-// import booksRouter from "./routes/methods.js";
-// import indexRouter from "./routes/indexRouter.js";
-// import urlBooksRouter from "./routes/urlRouter/methods.js";
-require("reflect-metadata");
-const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-const passport = require("passport");
-const LocalStrategy = require("passport-local").Strategy;
-const User = require("./models/users");
+import booksRouter from "./web/routes/methods";
+import indexRouter from "./web/routes/indexRouter";
+import urlBooksRouter from "./web/routes/urlRouter/methods";
+import mongoose, { Document } from "mongoose";
+// require("reflect-metadata");
+// const express = require("express");
+// const bodyParser = require("body-parser");
+// const cors = require("cors");
+// const passport = require("passport");
+// const LocalStrategy = require("passport-local").Strategy;
+// const User = require("./models/users");
 
-const http = require("http");
-const socketIO = require("socket.io");
+// const http = require("http");
+// const socketIO = require("socket.io");
 
-const loggerMiddleware = require("./middleware/logger");
-const errorMiddleware = require("./middleware/error");
+// const loggerMiddleware = require("./middleware/logger");
+// const errorMiddleware = require("./middleware/error");
 
-const booksRouter = require("./routes/methods");
-const indexRouter = require("./routes/indexRouter");
-const urlBooksRouter = require("./routes/urlRouter/methods");
+// const booksRouter = require("./routes/methods");
+// const indexRouter = require("./routes/indexRouter");
+// const urlBooksRouter = require("./routes/urlRouter/methods");
 
 const PORT = process.env.SERVER_PORT || 3000;
 
@@ -39,12 +40,12 @@ const options = {
   usernameField: "username",
   passwordField: "password",
   passReqToCallback: false,
-};
+} as IStrategyOptions;
 
 passport.use(
   "local",
-  new LocalStrategy(options, async (username, password, done) => {
-    await User.findOne({ username: username }, (err, user) => {
+  new Strategy(options, async (username, password, done) => {
+    await User.findOne({ username: username }, (err: any, user: IUser) => {
       if (err) {
         return done(err);
       }
@@ -60,9 +61,9 @@ passport.use(
   })
 );
 
-passport.serializeUser((user, cb) => {
+passport.serializeUser((user: any, cb) => {
   console.log(user);
-  cb(null, user.id);
+  cb(null, user._id);
 });
 
 passport.deserializeUser(async (id, cb) => {
@@ -76,8 +77,8 @@ passport.deserializeUser(async (id, cb) => {
 });
 
 const app = express();
-const server = http.Server(app);
-const io = socketIO(server);
+const server = new http.Server(app);
+const io = new socketIO.Server(server);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(

@@ -1,16 +1,15 @@
-// import express from "express";
-// import  Book from "../models/book.js";
-// import  fileMiddleware from "../middleware/file.js";
-const express = require("express");
+import express from "express";
+import Book from "../../infrastucture/mongo-connector/BookModel";
+import fileMiddleware from "../../infrastucture/middleware/file";
+// const express = require("express");
 const router = express.Router();
-const Book = require("../models/book");
-const fileMiddleware = require("../middleware/file");
+// const Book = require("../models/book");
+// const fileMiddleware = require("../middleware/file");
 
-
-router.post("/login", (req, res) => {
-  console.log(req.body);
-  res.status(201).json(store.user);
-});
+// router.post("/login", (req, res) => {
+//   console.log(req.body);
+//   res.status(201).json(store.user);
+// });
 router.get("/", async (req, res) => {
   try {
     const books = await Book.find();
@@ -34,18 +33,18 @@ router.get("/:id", async (req, res) => {
     console.log(e);
   }
 });
-router.post("", async (req, res) => {
-  try {
-    const { ...args } = req.body;
-    const book = new Book({ ...args });
-    store.library.push(book);
+// router.post("", async (req, res) => {
+//   try {
+//     const { ...args } = req.body;
+//     const book = new Book({ ...args });
+//     store.library.push(book);
 
-    res.status(201);
-    res.json(book);
-  } catch (e) {
-    console.log(e);
-  }
-});
+//     res.status(201);
+//     res.json(book);
+//   } catch (e) {
+//     console.log(e);
+//   }
+// });
 router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -99,5 +98,5 @@ router.get("/:id/download", (req, res) => {
   //   res.status(404).json("NOT FOUND FILE");
   // }
 });
-// export default router;
-module.exports = router;
+export default router;
+// module.exports = router;
